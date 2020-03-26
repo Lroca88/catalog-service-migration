@@ -1,0 +1,29 @@
+{
+  "name": "catalog-service-migration",
+  "version": "1.0.0",
+  "description": "Migrating records from CosmosDB through Kafka 🌠",
+  "main": "index.js",
+  "dependencies": {
+    "@azure/cosmos": "^3.6.2",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lroca88/catalog-service-migration.git"
+  },
+  "keywords": [
+    "cosmosDb",
+    "Kafka",
+    "migration"
+  ],
+  "author": "Luis Roca",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lroca88/catalog-service-migration/issues"
+  },
+  "homepage": "https://github.com/Lroca88/catalog-service-migration#readme"
+}
