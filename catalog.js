@@ -3,7 +3,7 @@ let access_token = null;
 
 function getAccessToken() {
   var options = {
-    method: "GET",
+    method: "POST",
     url:
       "https://login.microsoftonline.com/15ccb6d1-d335-4996-b6f9-7b6925f08121/oauth2/v2.0/token",
     headers: {
@@ -27,6 +27,28 @@ function getAccessToken() {
   });
 }
 
+function insertRecord(record, url) {
+  var options = {
+    method: 'POST',
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': 'eda238bb1940421db39464156639446f',
+      'Authorization': `Bearer ${access_token}`
+    },
+    body: record
+  };
+  return new Promise((resolve, reject) => {
+    request(options, function (error, response) { 
+      if (error) throw new Error(error);
+      console.log(response.body);
+      let body = JSON.parse(response.body);
+      return resolve(body);
+    });
+  })
+} 
+
 module.exports = {
-  getAccessToken
+  getAccessToken,
+  insertRecord
 }

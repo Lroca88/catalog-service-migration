@@ -18,7 +18,7 @@ async function startMigration() {
       migratedItem = migrate(item);
       let hasBeenDeleted = false;
       try {
-        const resp = await catalog.InsertRecord(migrated);
+        const resp = await catalog.insertRecord(migrated);
         hasBeenDeleted = await cosmos.deleteItem(item);
         if (hasBeenDeleted && resp.statusMesage == "OK") {
           reinserted += 1;
@@ -74,12 +74,18 @@ function migrate(item) {
   delete migratedItem.highlightedFeatures;
 
   // Remove configuration array and conver it to object
-  const configuration = item.details.configurations[0] || {};
+  let configuration = {}
+  if (item.details.configurations && item.details.configurations[0]) {
+    configuration = item.details.configurations[0];
+  }
   migratedItem.details.configuration = configuration;
   delete migratedItem.details.configurations;
 
   // Remove skus array and conver it to skuInfo object
-  const skuInfo = configuration.skus[0] || {};
+  let skuInfo = {}
+  if (configuration.skus && configuration.skus[0]) {
+    skuInfo = configuration.skus[0];
+  }
   skuInfo.sku = skuInfo.vendorSku;
   delete skuInfo.vendorSku;
   delete skuInfo.active;
