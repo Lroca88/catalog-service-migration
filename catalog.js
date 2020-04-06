@@ -1,7 +1,7 @@
 var request = require("request");
 let access_token = null;
 
-function getAccessToken() {
+function init() {
   var options = {
     method: "POST",
     url:
@@ -19,7 +19,6 @@ function getAccessToken() {
   return new Promise((resolve, reject) => {
     request(options, function(error, response) {
       if (error) throw new Error(error);
-      console.log(response.body);
       let body = JSON.parse(response.body);
       access_token = body.access_token
       return resolve(response);
@@ -36,19 +35,17 @@ function insertRecord(record, url) {
       'Ocp-Apim-Subscription-Key': 'eda238bb1940421db39464156639446f',
       'Authorization': `Bearer ${access_token}`
     },
-    body: record
+    body: JSON.stringify(record)
   };
   return new Promise((resolve, reject) => {
     request(options, function (error, response) { 
       if (error) throw new Error(error);
-      console.log(response.body);
-      let body = JSON.parse(response.body);
-      return resolve(body);
+      return resolve(response);
     });
   })
 } 
 
 module.exports = {
-  getAccessToken,
+  init,
   insertRecord
 }

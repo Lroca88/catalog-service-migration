@@ -60,9 +60,7 @@ async function deleteItem(item) {
 
 // Delete container (used to delete the new container when we are done)
 async function deleteContainer(containerId) {
-  const containerToDelete = cosmosClient
-    .database(cosmosDatabaseId)
-    .container(containerId);
+  const containerToDelete = database.container(containerId);
   await containerToDelete.delete();
   return true;
 }

@@ -4,7 +4,7 @@ const cosmos = require("./cosmos");
 
 async function startMigration() {
   cosmosReady = cosmos.init(config);
-  catalogReady = await catalog.getAccessToken();
+  catalogReady = await catalog.init();
 
   if (cosmosReady && catalogReady.statusMessage == "OK") {
     const { copied, items } = await cosmos.copyItemsToNewContainer(
@@ -12,15 +12,15 @@ async function startMigration() {
     );
 
     let migratedItem = null;
-    let reinserted = [];
+    let reinserted = 0;
     for (const index in items) {
       const item = items[index];
-      migratedItem = migrate(item);
       let hasBeenDeleted = false;
       try {
-        const resp = await catalog.insertRecord(migrated);
+        migratedItem = migrate(item);
+        const resp = await catalog.insertRecord(migratedItem, config.catalogUrl);
         hasBeenDeleted = await cosmos.deleteItem(item);
-        if (hasBeenDeleted && resp.statusMesage == "OK") {
+        if (hasBeenDeleted && resp.statusMessage == "Created") {
           reinserted += 1;
         }
       } catch (err) {
@@ -29,6 +29,7 @@ async function startMigration() {
       }
     }
 
+    // Validating everything has been copied and deleteing the temporal collection.
     if (copied == reinserted) {
       cosmos.deleteContainer(config.cosmosNewContainerId);
     }
@@ -39,7 +40,8 @@ function isComputer(item) {
   const computer = {
     Laptop: true,
     Desktop: true,
-    Workstation: true
+    Workstation: true,
+    Tablet: true,
   };
 
   const res = computer[item.category] || false;
@@ -87,6 +89,7 @@ function migrate(item) {
     skuInfo = configuration.skus[0];
   }
   skuInfo.sku = skuInfo.vendorSku;
+  delete skuInfo.id;
   delete skuInfo.vendorSku;
   delete skuInfo.active;
   migratedItem.details.configuration.skuInfo = skuInfo;
@@ -96,8 +99,8 @@ function migrate(item) {
     migratedItem.details.class = "computer";
   } else {
     migratedItem.details.class = "accessory";
-    migratedItem.details.computer.skuInfo.language = skuInfo.keyboardLanguage;
-    delete migratedItem.details.computer.skuInfo.keyboardLanguage;
+    migratedItem.details.configuration.skuInfo.language = skuInfo.keyboardLanguage;
+    delete migratedItem.details.configuration.skuInfo.keyboardLanguage;
   }
 
   return migratedItem
