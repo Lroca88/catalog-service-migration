@@ -1,8 +1,0 @@
-{
-  "cosmosEndPoint": "https://mytech-catalog.documents.azure.com:443",
-  "cosmosPrimaryKey": "FOoXX910vpV7yG5vOzMRQqcMacDudQ5MsOpOE4mCOCvimm0AWNYF35LOTHe4uW0TW1vSCHRqoE8cGnFgqFdUpA==",
-  "cosmosDatabaseId": "catalogItems",
-  "cosmosContainerId": "catalog",
-  "cosmosNewContainerId": "catalog-save",
-  "catalogUrl": "https://mytechdev.azure-api.net/catalog"
-}
