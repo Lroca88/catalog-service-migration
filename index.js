@@ -4,7 +4,7 @@ const cosmos = require("./cosmos");
 
 async function startMigration() {
   cosmosReady = cosmos.init(config);
-  catalogReady = await catalog.init();
+  catalogReady = await catalog.init(config.msftAuthUrl, config.msftClientId, config.msftScope, config.msoftOauthClientSecret);
 
   if (cosmosReady && catalogReady.statusMessage == "OK") {
     const { copied, items } = await cosmos.copyItemsToNewContainer(
@@ -18,7 +18,7 @@ async function startMigration() {
       let hasBeenDeleted = false;
       try {
         migratedItem = migrate(item);
-        const resp = await catalog.insertRecord(migratedItem, config.catalogUrl);
+        const resp = await catalog.insertRecord(migratedItem, config.catalogUrl, config.apiMSubscriptionKey);
         hasBeenDeleted = await cosmos.deleteItem(item);
         if (hasBeenDeleted && resp.statusMessage == "Created") {
           reinserted += 1;
